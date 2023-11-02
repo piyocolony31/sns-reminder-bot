@@ -38,8 +38,8 @@ def send_line_message():
                             "type": "action",
                             "action": {
                                 "type": "message",
-                                "label": "未定",
-                                "text": "未定（いつわかるかも追記してね）"
+                                "label": "未定（いつわかるか追記してね）",
+                                "text": "未定"
                             }
                         }
                     ]
