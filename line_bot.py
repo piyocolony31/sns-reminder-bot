@@ -2,7 +2,7 @@ import os
 import requests
 
 LINE_CHANNEL_ACCESS_TOKEN = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
-LINE_GROUP_ID = os.environ["LINE_GROUP_ID"]  # 追加
+LINE_GROUP_ID = os.environ["LINE_GROUP_ID"]
 
 def send_line_message():
     url = "https://api.line.me/v2/bot/message/push"
@@ -11,7 +11,7 @@ def send_line_message():
         "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}"
     }
     data = {
-        "to": LINE_GROUP_ID,  # 変更
+        "to": LINE_GROUP_ID,
         "messages": [
             {
                 "type": "text",
