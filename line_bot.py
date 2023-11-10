@@ -17,7 +17,7 @@ data = {
             "altText": "明日の定例会は参加する？",
             "template": {
                 "type": "buttons",
-                "thumbnailImageUrl": "ここに画像のURLを挿入",  # 画像がある場合
+                "thumbnailImageUrl": "https://pinfluencer.net/wp-content/uploads/2016/08/-%E9%BB%92%E7%8C%AB%E3%80%80%E3%82%B3%E3%82%B9%E3%83%97%E3%83%AC-e1471934121461.jpg",
                 "imageAspectRatio": "rectangle",
                 "imageSize": "cover",
                 "imageBackgroundColor": "#FFFFFF",
