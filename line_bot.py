@@ -26,17 +26,17 @@ data = {
                 "actions": [
                     {
                         "type": "message",
-                        "label": "🙆‍♂参加",
+                        "label": "👍参加",
                         "text": "参加するよ！"
                     },
                     {
                         "type": "message",
-                        "label": "🙅‍♂欠席",
+                        "label": "❌欠席",
                         "text": "ごめん､欠席する..."
                     },
                     {
                         "type": "message",
-                        "label": "🤔未定(いつ分かるか追記してね)",
+                        "label": "❓未定(いつ分かるか追記してね)",
                         "text": "未定だなぁ...いつ分かるか5秒後に送るから待ってて！"
                     }
                 ]
