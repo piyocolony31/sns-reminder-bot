@@ -14,6 +14,7 @@ jobs:
           curl -H "Content-Type: application/json" \
           -X POST \
           -d '{
-            "content": "🍚週末の買い物に向けて来週のメニューを考えましょう！\r🎲食べたいものがなければ在庫をルーレット"
+            "content": "🍚週末の買い物に向けて来週のメニューを考えましょう！\r🎲食べたいものがなければ在庫をルーレット @everyone",
+            "allowed_mentions": { "parse": ["everyone"] }
           }' \
           ${{ secrets.DISCORD_MENU_WEBHOOK_URL }}

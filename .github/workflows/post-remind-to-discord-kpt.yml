@@ -31,6 +31,7 @@ jobs:
           curl -H "Content-Type: application/json" \
           -X POST \
           -d '{
-            "content": "そろそろKPTやりますか"
+            "content": "ほら、KPTの時間ですよ！今週のミスをポンポン投げつけて、笑いながら振り返りましょう！\rNotionのKPT表に追記すべし @everyone",
+            "allowed_mentions": { "parse": ["everyone"] }
           }' \
           ${{ secrets.DISCORD_KPT_WEBHOOK_URL }}
