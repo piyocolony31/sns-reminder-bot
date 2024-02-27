@@ -1,0 +1,18 @@
+name: Discord reminder
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 21 * * 5" # 金曜日の21:00に実行
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remind on Discord
+        uses: appleboy/discord-action@master
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          color: "16711680" # Message embed color in decimal
+          message: "🍚週末の買い物に向けて来週のメニューを考えましょう！¥n🎲食べたいものがなければ在庫をルーレット"
