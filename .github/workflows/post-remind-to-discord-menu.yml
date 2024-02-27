@@ -14,5 +14,6 @@ jobs:
         with:
           webhook_id: ${{ secrets.DISCORD_MENU_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_MENU_WEBHOOK_TOKEN }}
-          color: "16711680" # Message embed color in decimal
+          color: "16711680"
+          username: "リマインダー"
           message: "🍚週末の買い物に向けて来週のメニューを考えましょう！¥n🎲食べたいものがなければ在庫をルーレット"
