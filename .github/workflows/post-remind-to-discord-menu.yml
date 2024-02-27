@@ -1,0 +1,20 @@
+name: Discord reminder to menu
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 18 * * 5" # 金曜日の18:00に実行
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "🍚週末の買い物に向けて来週のメニューを考えましょう！\r🎲食べたいものがなければ在庫をルーレット @everyone",
+            "allowed_mentions": { "parse": ["everyone"] }
+          }' \
+          ${{ secrets.DISCORD_MENU_WEBHOOK_URL }}
