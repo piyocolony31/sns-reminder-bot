@@ -17,7 +17,7 @@ jobs:
       - name: Run on every other week
         run: |
           WEEK=$(date +"%V")
-          if [ $(($WEEK % 2)) -eq 1 ]; then
+          if [ $((10#$WEEK % 2)) -eq 1 ]; then
             echo "Running on odd weeks (1st, 3rd, 5th week of a month)"
             # Define the task to be run
           else
