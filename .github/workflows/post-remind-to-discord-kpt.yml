@@ -1,4 +1,4 @@
-name: Discord reminder to menu
+name: Discord reminder to kpt
 
 on:
   workflow_dispatch:
