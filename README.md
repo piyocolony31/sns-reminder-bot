@@ -1,6 +1,6 @@
-# attendance-line-bot
+# sns-reminder-bot
 
-といいつつ Discord の Bot も混ぜちゃいました
+いろいろなSNSへリマインダーを送るリポジトリ
 
 ## LINE Reminder Bot
 
