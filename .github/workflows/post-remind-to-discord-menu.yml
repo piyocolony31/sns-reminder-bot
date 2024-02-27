@@ -3,17 +3,17 @@ name: Discord reminder to menu
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 21 * * 5" # 金曜日の21:00に実行
+    - cron: "0 18 * * 5" # 金曜日の18:00に実行
 
 jobs:
   remind:
     runs-on: ubuntu-latest
     steps:
-      - name: Remind on Discord
-        uses: appleboy/discord-action@master
-        with:
-          webhook_id: ${{ secrets.DISCORD_MENU_WEBHOOK_ID }}
-          webhook_token: ${{ secrets.DISCORD_MENU_WEBHOOK_TOKEN }}
-          color: "16711680"
-          username: "リマインダー"
-          message: "🍚週末の買い物に向けて来週のメニューを考えましょう！¥n🎲食べたいものがなければ在庫をルーレット"
+      - name: Notify Discord
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "🍚週末の買い物に向けて来週のメニューを考えましょう！\r🎲食べたいものがなければ在庫をルーレット"
+          }' \
+          ${{ secrets.DISCORD_MENU_WEBHOOK_URL }}
