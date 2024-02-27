@@ -1,4 +1,4 @@
-name: Run Line Bot
+name: LINE Reminder to 定例
 
 on:
   workflow_dispatch:
@@ -23,8 +23,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run line_bot.py
+      - name: Run post-remind-to-line-regular-mt/main.py
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
-        run: python line_bot.py
+        run: python post-remind-to-line-regular-mt/main.py
