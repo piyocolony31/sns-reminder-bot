@@ -1,10 +1,10 @@
 # sns-reminder-bot
 
-いろいろなSNSへリマインダーを送るリポジトリ
+いろいろな SNS へリマインダーを送るリポジトリ
 
 ## LINE Reminder Bot
 
-- .github/workflows/post.yml
+- .github/workflows/post-remind-to-line-regular-mt.yml
 
 ## Discord Reminder Bot
 
