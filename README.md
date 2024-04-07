@@ -10,3 +10,4 @@
 
 - .github/workflows/post-remind-to-discord-kpt.yml
 - .github/workflows/post-remind-to-discord-menu.yml
+- .github/workflows/post-remind-to-discord-clean-aqua-filter
