@@ -1,4 +1,4 @@
-name: Discord reminder to kpt
+name: Discord reminder to clean aqua filter
 
 on:
   workflow_dispatch:
