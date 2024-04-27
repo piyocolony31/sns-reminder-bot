@@ -22,10 +22,8 @@ jobs:
             # Define the task to be run
           else
             echo "This task will not run on even weeks (2nd, 4th week of a month)"
+            exit 1
           fi
-  remind:
-    runs-on: ubuntu-latest
-    steps:
       - name: Notify Discord
         run: |
           curl -H "Content-Type: application/json" \
