@@ -15,6 +15,6 @@ jobs:
           curl -H "Content-Type: application/json" \
           -X POST \
           -d '{
-            "content": "----------\n🐶明日は家計簿締め日！🐶\n先月分で記載忘れ・間違いがないか確認しましょう。\n----------
+            "content": "----------\n🐶明日は家計簿締め日！🐶\n先月分で記載忘れ・間違いがないか確認しましょう。\n----------"
           }' \
           ${{ secrets.DISCORD_LAST_MONTH_WEBHOOK_URL }}
