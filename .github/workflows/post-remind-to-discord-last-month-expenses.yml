@@ -10,14 +10,6 @@ jobs:
   end-of-month-task:
     runs-on: ubuntu-latest
     steps:
-      - name: Run task if today is the last day of the month
-        run: |
-          if [ "$(date +\%d -d tomorrow)" == "01" ]; then
-            echo "Running end-of-month tasks."
-          else
-            echo "Today is not the last day of the month. No action taken."
-            exit 1
-          fi
       - name: Notify Discord
         run: |
           curl -H "Content-Type: application/json" \
