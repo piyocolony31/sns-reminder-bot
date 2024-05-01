@@ -1,4 +1,4 @@
-name: Scheduled End of Month Job
+name: Discord reminder to check last month expenses
 
 on:
   schedule:
