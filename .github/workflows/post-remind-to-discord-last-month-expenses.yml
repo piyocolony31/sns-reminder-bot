@@ -7,7 +7,7 @@ on:
     - cron: '0 9 1 * *'
 
 jobs:
-  end-of-month-task:
+  remind:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Discord
