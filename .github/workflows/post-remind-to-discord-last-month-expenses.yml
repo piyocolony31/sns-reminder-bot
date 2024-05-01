@@ -1,6 +1,7 @@
 name: Discord reminder to check last month expenses
 
 on:
+  workflow_dispatch:
   schedule:
     # 毎月1日の9:00に起動
     - cron: '0 9 1 * *'
