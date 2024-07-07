@@ -48,3 +48,11 @@ jobs:
             "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone" \
             "Click me!" \
             "お掃除お疲れ様ﾋﾟﾖ！"
+        continue-on-error: true
+
+      - name: Check for errors
+        run: |
+          if [ $? -ne 0 ]; then
+            echo "Discord notification failed"
+            exit 1
+          fi

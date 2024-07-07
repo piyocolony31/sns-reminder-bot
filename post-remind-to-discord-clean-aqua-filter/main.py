@@ -1,9 +1,10 @@
 import sys
+import asyncio
 import discord
 from discord.ext import commands
 from discord import Intents
 
-def main(token, content, button_label, button_response):
+async def main(token, content, button_label, button_response):
     intents = Intents.default()
     intents.message_content = True
     bot = commands.Bot(command_prefix="!", intents=intents)
@@ -15,7 +16,12 @@ def main(token, content, button_label, button_response):
         await bot.close()
 
     async def send_button():
+        await bot.wait_until_ready()
         channel = bot.get_channel(bot.guilds[0].text_channels[0].id)
+        if not channel:
+            print("Channel not found")
+            return
+
         button = discord.ui.Button(label=button_label, style=discord.ButtonStyle.primary, custom_id="button_click")
         
         async def button_callback(interaction):
@@ -25,8 +31,12 @@ def main(token, content, button_label, button_response):
         view = discord.ui.View()
         view.add_item(button)
         await channel.send(content, view=view)
+        print("Message sent successfully")
 
-    bot.run(token)
+    try:
+        await bot.start(token)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
@@ -38,4 +48,4 @@ if __name__ == "__main__":
     button_label = sys.argv[3]
     button_response = sys.argv[4]
     
-    main(token, content, button_label, button_response)
+    asyncio.run(main(token, content, button_label, button_response))
