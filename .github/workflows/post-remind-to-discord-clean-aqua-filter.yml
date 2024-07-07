@@ -6,53 +6,29 @@ on:
     - cron: "0 21 * * 5" # 金曜日の21:00に実行
 
 jobs:
-  check-every-week:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Run on every other week
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
-            echo "Manual run, proceeding..."
+          WEEK=$(date +"%V")
+          if [ $((10#$WEEK % 2)) -eq 1 ]; then
+            echo "Running on odd weeks (1st, 3rd, 5th week of a month)"
+            # Define the task to be run
           else
-            WEEK=$(date +"%V")
-            if [ $((10#$WEEK % 2)) -eq 1 ]; then
-              echo "Running on odd weeks (1st, 3rd, 5th week of a month)"
-              # Define the task to be run
-            else
-              echo "This task will not run on even weeks (2nd, 4th week of a month)"
-            fi
+            echo "This task will not run on even weeks (2nd, 4th week of a month)"
           fi
   remind:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install discord.py discord-py-interactions
-
       - name: Notify Discord
-        env:
-          DISCORD_CLEAN_AQUA_BOT_TOKEN: ${{ secrets.DISCORD_CLEAN_AQUA_BOT_TOKEN }}
         run: |
-          python post-remind-to-discord-clean-aqua-filter/main.py \
-            "$DISCORD_CLEAN_AQUA_BOT_TOKEN" \
-            "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone" \
-            "Click me!" \
-            "お掃除お疲れ様ﾋﾟﾖ！"
-        continue-on-error: true
-
-      - name: Check for errors
-        run: |
-          if [ $? -ne 0 ]; then
-            echo "Discord notification failed"
-            exit 1
-          fi
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone",
+            "allowed_mentions": { "parse": ["everyone"] }
+          }' \
+          ${{ secrets.DISCORD_CLEAN_AQUA_WEBHOOK_URL }}
