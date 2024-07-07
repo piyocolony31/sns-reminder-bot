@@ -33,7 +33,7 @@ jobs:
           python -m pip install requests
       - name: Notify Discord
         run: |
-          python notify_discord.py \
+          python send_discord_with_button_notification.py \
             "${{ secrets.DISCORD_CLEAN_AQUA_WEBHOOK_URL }}" \
             "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone" \
             "Click me!" \
