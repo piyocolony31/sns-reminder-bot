@@ -41,10 +41,10 @@ jobs:
 
       - name: Notify Discord
         env:
-          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CLEAN_AQUA_BOT_TOKEN: ${{ secrets.DISCORD_CLEAN_AQUA_BOT_TOKEN }}
         run: |
           python post-remind-to-discord-clean-aqua-filter/main.py \
-            "$DISCORD_BOT_TOKEN" \
+            "$DISCORD_CLEAN_AQUA_BOT_TOKEN" \
             "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone" \
             "Click me!" \
             "お掃除お疲れ様ﾋﾟﾖ！"
