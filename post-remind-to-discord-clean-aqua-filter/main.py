@@ -1,43 +1,40 @@
 import sys
-import requests
-import json
+import discord
+from discord.ext import commands
+from discord import Intents
 
-def send_discord_with_button_notification(webhook_url, content, button_label, button_response):
-    data = {
-        "content": content,
-        "components": [
-            {
-                "type": 1,
-                "components": [
-                    {
-                        "type": 2,
-                        "label": button_label,
-                        "style": 1,
-                        "custom_id": "button_click"
-                    }
-                ]
-            }
-        ]
-    }
+def main(token, content, button_label, button_response):
+    intents = Intents.default()
+    bot = commands.Bot(command_prefix="!", intents=intents)
 
-    response = requests.post(webhook_url, headers={"Content-Type": "application/json"}, data=json.dumps(data))
-    if response.status_code == 200:
-        print("Notification sent successfully.")
-    else:
-        print(f"Failed to send notification: {response.status_code}")
-    
-    # Handling button interaction (this part needs to be managed by your bot)
-    # For simplicity, we'll just print the response message here
-    print(f"Button response: {button_response}")
+    @bot.event
+    async def on_ready():
+        print(f'Logged in as {bot.user}')
+
+    @bot.command(name="send_button")
+    async def send_button(ctx):
+        button = discord.ui.Button(label=button_label, style=discord.ButtonStyle.primary, custom_id="button_click")
+
+        async def button_callback(interaction):
+            await interaction.response.send_message(button_response, ephemeral=True)
+
+        button.callback = button_callback
+
+        view = discord.ui.View()
+        view.add_item(button)
+
+        await ctx.send(content, view=view)
+
+    bot.run(token)
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
-        print("Usage: python notify_discord.py <webhook_url> <content> <button_label> <button_response>")
+        print("Usage: python send_discord_with_button_notification.py <token> <content> <button_label> <button_response>")
         sys.exit(1)
-    
-    webhook_url = sys.argv[1]
+
+    token = sys.argv[1]
     content = sys.argv[2]
     button_label = sys.argv[3]
     button_response = sys.argv[4]
 
-    send_discord_with_button_notification(webhook_url, content, button_label, button_response)
+    main(token, content, button_label, button_response)
