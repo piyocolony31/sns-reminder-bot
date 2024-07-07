@@ -5,6 +5,7 @@ from discord import Intents
 
 def main(token, content, button_label, button_response):
     intents = Intents.default()
+    intents.message_content = True
     bot = commands.Bot(command_prefix="!", intents=intents)
 
     @bot.event
@@ -29,7 +30,7 @@ def main(token, content, button_label, button_response):
 
 if __name__ == "__main__":
     if len(sys.argv) != 5:
-        print("Usage: python send_discord_with_button_notification.py <token> <content> <button_label> <button_response>")
+        print("Usage: python post-remind-to-discord-clean-aqua-filter/main.py <token> <content> <button_label> <button_response>")
         sys.exit(1)
 
     token = sys.argv[1]
