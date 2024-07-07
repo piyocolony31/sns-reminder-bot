@@ -6,34 +6,37 @@ on:
     - cron: "0 21 * * 5" # 金曜日の21:00に実行
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-  #     - name: Run on every other week
-  #       run: |
-  #         WEEK=$(date +"%V")
-  #         if [ $((10#$WEEK % 2)) -eq 1 ]; then
-  #           echo "Running on odd weeks (1st, 3rd, 5th week of a month)"
-  #           # Define the task to be run
-  #         else
-  #           echo "This task will not run on even weeks (2nd, 4th week of a month)"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run on every other week
+        run: |
+          WEEK=$(date +"%V")
+          if [ $((10#$WEEK % 2)) -eq 1 ]; then
+            echo "Running on odd weeks (1st, 3rd, 5th week of a month)"
+            # Define the task to be run
+          else
+            echo "This task will not run on even weeks (2nd, 4th week of a month)"
   remind:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
+
       - name: Install dependencies
         run: |
           python -m pip install requests
+
       - name: Notify Discord
         run: |
-          python send_discord_with_button_notification.py \
+          python post-remind-to-discord-clean-aqua-filter/main.py \
             "${{ secrets.DISCORD_CLEAN_AQUA_WEBHOOK_URL }}" \
             "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone" \
             "Click me!" \
