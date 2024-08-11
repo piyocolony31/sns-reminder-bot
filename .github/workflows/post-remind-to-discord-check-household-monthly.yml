@@ -14,7 +14,7 @@ jobs:
           curl -H "Content-Type: application/json" \
           -X POST \
           -d '{
-            "content": 家計簿チェック通知が来てなかったら権限が怪しくなってるのでボスは手直ししてください🐶",
+            "content": "🐶家計簿チェック通知が来てなかったら権限が怪しくなってるのでボスは手直ししてください🐶",
             "allowed_mentions": { "parse": ["everyone"] }
           }' \
           ${{ secrets.DISCORD_HOUSEHOLD_WEBHOOK_URL }}
