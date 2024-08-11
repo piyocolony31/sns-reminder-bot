@@ -1,0 +1,20 @@
+name: Discord reminder to check household monthly
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 1 * *' # 毎月1日の9:00に起動
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord
+        run: |
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d '{
+            "content": 家計簿チェック通知が来てなかったら権限が怪しくなってるのでボスは手直ししてください🐶",
+            "allowed_mentions": { "parse": ["everyone"] }
+          }' \
+          ${{ secrets.DISCORD_HOUSEHOLD_WEBHOOK_URL }}
