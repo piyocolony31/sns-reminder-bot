@@ -20,7 +20,7 @@ data = {
             "altText": "次会えるの、いつだっけ？",
             "template": {
                 "type": "buttons",
-                "thumbnailImageUrl": "https://example.com/honda_tsubasa.jpg",  # 画像URLは差し替えてください
+                "thumbnailImageUrl": "https://pinfluencer.net/wp-content/uploads/2016/08/-%E9%BB%92%E7%8C%AB%E3%80%80%E3%82%B3%E3%82%B9%E3%83%97%E3%83%AC-e1471934121461.jpg",
                 "imageAspectRatio": "rectangle",
                 "imageSize": "cover",
                 "imageBackgroundColor": "#FFFFFF",
