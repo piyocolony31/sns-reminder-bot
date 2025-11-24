@@ -1,0 +1,50 @@
+name: Check ahamo stock
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 毎日15時から21時の間、毎時0分に実行
+  - cron: '0 6-23 * * *'
+
+jobs:
+  check-stock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: 'pip'
+      - name: Install Japanese fonts
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
+
+      # playwright のブラウザキャッシュ（任意）
+      - name: Cache Playwright browsers
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      # パッケージインストール
+      - name: Install dependencies
+        run: |
+          pip install playwright requests
+          python -m playwright install
+
+      - name: Run ahamo stock check
+        env:
+          DISCORD_WEBHOOK_AUTOCHECK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
+        run: python check-iphone17-stock/check_ahamo_stock.py
+
+      - name: Run docomo stock check
+        env:
+          DISCORD_WEBHOOK_AUTOCHECK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
+        run: python check-iphone17-stock/check_docomo_stock.py

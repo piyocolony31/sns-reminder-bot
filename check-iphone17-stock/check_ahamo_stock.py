@@ -135,27 +135,6 @@ def main():
             browser.close()
             sys.exit(2)
 
-        # small wait for dynamic content
-        time.sleep(2)
-
-        # Before selecting colors, explicitly select the 256GB storage option
-        # (there is also 512, so choose 256 to make selection explicit)
-        size_candidates = ["256", "256GB", "256 GB", "256ギガ", "256G"]
-        size_selected = False
-        for s in size_candidates:
-            try:
-                if try_click_option(page, s):
-                    print(f"Selected storage option: {s}")
-                    size_selected = True
-                    # allow page to update
-                    time.sleep(1)
-                    break
-            except Exception as e:
-                print(f"Error selecting storage option '{s}': {e}")
-
-        if not size_selected:
-            print("Could not explicitly select 256 storage option; continuing without explicit size selection")
-
         for color in COLORS:
             print(f"Checking color: {color}")
             clicked = False
