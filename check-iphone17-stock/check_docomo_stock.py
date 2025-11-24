@@ -59,7 +59,7 @@ def main():
 
         print(f"Found '{AVAILABLE_TEXT}' {count} times.")
 
-        if count != 5: # DOMは53個。見た目上は5個。
+        if count != 5:
             msg = f"[docomoチェック] 在庫状況に変化あり: '{AVAILABLE_TEXT}' が {count} 個あります。\n{URL}"
             print("Sending webhook", msg)
             screenshot_path = "/tmp/docomo_stock_change.png"
