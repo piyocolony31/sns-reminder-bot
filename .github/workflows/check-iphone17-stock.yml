@@ -2,9 +2,6 @@ name: Check ahamo stock
 
 on:
   workflow_dispatch:
-  schedule:
-    # 毎日15時から21時の間、毎時0分に実行
-  - cron: '0 6-23 * * *'
 
 jobs:
   check-stock:
