@@ -2,8 +2,8 @@ name: Discord reminder to menu
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 18 * * 5" # 金曜日の18:00に実行
+  # schedule:
+  #   - cron: "0 18 * * 5" # 金曜日の18:00に実行
 
 jobs:
   remind:

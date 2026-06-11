@@ -2,8 +2,8 @@ name: Discord reminder to kpt
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 21 * * 5" # 金曜日の21:00に実行
+  # schedule:
+  #   - cron: "0 21 * * 5" # 金曜日の21:00に実行
 
 jobs:
   build:
