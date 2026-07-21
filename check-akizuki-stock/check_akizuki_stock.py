@@ -46,9 +46,14 @@ def main():
         time.sleep(5)
 
         try:
-            page_text = page.inner_text("body")
-            has_cart_button = IN_STOCK_TEXT_1 in page_text
-        except Exception:
+            cart_btns = page.locator(".block-goods-detail-cart-btns")
+            if cart_btns.count() > 0:
+                text = cart_btns.first.inner_text()
+                has_cart_button = IN_STOCK_TEXT_1 in text
+            else:
+                has_cart_button = False
+        except Exception as e:
+            print(f"Error extracting stock info: {e}")
             has_cart_button = False
 
         print(f"has_cart_button: {has_cart_button}")
