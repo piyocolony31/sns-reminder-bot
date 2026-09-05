@@ -25,10 +25,10 @@ jobs:
     steps:
       - name: Notify Discord
         run: |
+          ASSIGNEES=("担当はY！" "担当はH！")
+          ASSIGNEE=${ASSIGNEES[$((RANDOM % 2))]}
+          PAYLOAD=$(jq -n --arg content "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ ${ASSIGNEE} @everyone" '{content: $content, allowed_mentions: {parse: ["everyone"]}}')
           curl -H "Content-Type: application/json" \
           -X POST \
-          -d '{
-            "content": "🐥 < AQUAのフィルター掃除をするﾋﾟﾖ！ @everyone",
-            "allowed_mentions": { "parse": ["everyone"] }
-          }' \
+          -d "$PAYLOAD" \
           ${{ secrets.DISCORD_CLEAN_AQUA_WEBHOOK_URL }}
