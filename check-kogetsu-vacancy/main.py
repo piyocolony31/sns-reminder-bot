@@ -19,6 +19,9 @@ STAYS = "1"
 MIN_SEARCH_DATE = date(2026, 12, 1)
 MAX_SEARCH_DATE = date(2027, 3, 31)
 
+# 日曜日のみチェックするかどうか (デフォルト: True、SUNDAY_ONLY=false で全曜日チェック)
+SUNDAY_ONLY = os.getenv("SUNDAY_ONLY", "true").lower() == "true"
+
 # LINE & Discord 通知用環境変数
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 LINE_GROUP_ID = os.getenv("LINE_GROUP_ID") or os.getenv("LINE_TO_ID")
@@ -133,8 +136,8 @@ def check_kogetsu_sunday_vacancies():
                 if not (MIN_SEARCH_DATE <= sales_date <= MAX_SEARCH_DATE):
                     continue
 
-                # 条件2: 日曜日 (weekday == 6)
-                if sales_date.weekday() != 6:
+                # 条件2: 日曜日のみチェックする場合 (weekday == 6)
+                if SUNDAY_ONLY and sales_date.weekday() != 6:
                     continue
 
                 # 条件3: 空室あり (salesAvailable == True)
