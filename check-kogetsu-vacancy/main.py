@@ -163,7 +163,11 @@ def check_kogetsu_sunday_vacancies():
 
 def send_http_post(url: str, headers: dict, data_bytes: bytes):
     """標準ライブラリを使用した POST リクエスト"""
-    req = urllib.request.Request(url, data=data_bytes, headers=headers, method="POST")
+    req_headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)"
+    }
+    req_headers.update(headers)
+    req = urllib.request.Request(url, data=data_bytes, headers=req_headers, method="POST")
     with urllib.request.urlopen(req, timeout=10) as resp:
         return resp.status
 
