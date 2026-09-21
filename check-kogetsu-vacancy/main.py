@@ -25,7 +25,7 @@ SUNDAY_ONLY = os.getenv("SUNDAY_ONLY", "true").lower() == "true"
 # LINE & Discord 通知用環境変数
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 LINE_GROUP_ID = os.getenv("LINE_GROUP_ID") or os.getenv("LINE_TO_ID")
-DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("DISCORD_HOUSEHOLD_WEBHOOK_URL")
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("DISCORD_WEBHOOK_AUTOCHECK_URL") or os.getenv("DISCORD_HOUSEHOLD_WEBHOOK_URL")
 
 
 def get_target_year_months():
