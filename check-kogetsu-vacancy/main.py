@@ -256,11 +256,10 @@ def main():
     msg = format_notification_message(vacancies)
     logging.info(f"\n--- 送信メッセージ ---\n{msg}\n---------------------")
 
-    sent_line = notify_line(msg)
     sent_discord = notify_discord(msg)
 
-    if not sent_line and not sent_discord:
-        logging.info("通知先の環境変数が設定されていません。コンソール出力のみ完了しました。")
+    if not sent_discord:
+        logging.info("DISCORD_WEBHOOK_URL が設定されていないか、送信に失敗しました。コンソール出力のみ完了しました。")
 
 
 if __name__ == "__main__":
