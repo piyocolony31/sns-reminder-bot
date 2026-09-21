@@ -1,0 +1,26 @@
+name: Check Kogetsu Sunday Vacancy
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */1 * * *' # 毎時0分に実行
+
+jobs:
+  check_vacancy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Run Kogetsu Sunday Vacancy Checker
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_HOUSEHOLD_WEBHOOK_URL }}
+        run: python check-kogetsu-vacancy/main.py
