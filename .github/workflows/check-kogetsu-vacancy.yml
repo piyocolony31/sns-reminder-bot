@@ -21,5 +21,4 @@ jobs:
       - name: Run Kogetsu Sunday Vacancy Checker
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
-          SUNDAY_ONLY: "false"
         run: python check-kogetsu-vacancy/main.py
