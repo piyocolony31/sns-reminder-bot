@@ -19,6 +19,9 @@ STAYS = "1"
 MIN_SEARCH_DATE = date(2026, 12, 1)
 MAX_SEARCH_DATE = date(2027, 3, 31)
 
+# 除外対象の日付 (月, 日) - 1月3日などを通知スキップ対象にする
+EXCLUDE_MONTH_DAYS = {(1, 3)}
+
 # 日曜日のみチェックするかどうか (デフォルト: True、SUNDAY_ONLY=false で全曜日チェック)
 SUNDAY_ONLY = os.getenv("SUNDAY_ONLY", "true").lower() == "true"
 
@@ -140,7 +143,11 @@ def check_kogetsu_sunday_vacancies():
                 if SUNDAY_ONLY and sales_date.weekday() != 6:
                     continue
 
-                # 条件3: 空室あり (salesAvailable == True)
+                # 条件3: 除外日のチェック (例: 1月3日)
+                if (sales_date.month, sales_date.day) in EXCLUDE_MONTH_DAYS:
+                    continue
+
+                # 条件4: 空室あり (salesAvailable == True)
                 if daily.get("salesAvailable") is True:
                     price_info = daily.get("lowestPlanForRegular") or daily.get("lowestPlanForMember")
                     total_price = price_info.get("totalPrice") if price_info else None
