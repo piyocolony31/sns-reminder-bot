@@ -1,0 +1,38 @@
+name: Check SacsBar Sale Wallets
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # 毎日日本時間9:00 (UTC 0:00) に実行
+
+jobs:
+  check_sale_wallets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies & Playwright
+        run: |
+          pip install -r check-sacsbar-sale-wallets/requirements.txt
+          playwright install --with-deps chromium
+
+      - name: Run Sacs Bar Sale Wallet Checker
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+        run: python check-sacsbar-sale-wallets/main.py
+
+      - name: Commit and push updated known_wallets.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add check-sacsbar-sale-wallets/known_wallets.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update SacsBar known sale wallets" && git push)
