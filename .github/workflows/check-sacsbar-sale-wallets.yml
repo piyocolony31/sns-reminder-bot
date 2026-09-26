@@ -25,9 +25,7 @@ jobs:
 
       - name: Run Sacs Bar Sale Wallet Checker
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
-          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
-          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+          DISCORD_WEBHOOK_AUTOCHECK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
         run: python check-sacsbar-sale-wallets/main.py
 
       - name: Commit and push updated known_wallets.json

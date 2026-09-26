@@ -26,9 +26,7 @@ Sacs Bar (サックスバー) 公式サイトのメンズ・ユニセックス�
 - 次回実行時に保存済みの商品IDと比較し、未検知の商品IDが存在する場合のみ「新着アイテム」として通知を行います。
 
 ### 4. 通知機能
-以下の環境変数が設定されている場合、新着アイテムのテキストおよびURLを送信します。
-- `DISCORD_WEBHOOK_URL` / `DISCORD_WEBHOOK_AUTOCHECK_URL`: Discord通知
-- `LINE_CHANNEL_ACCESS_TOKEN` & `LINE_GROUP_ID` / `LINE_TO_ID`: LINE Push API通知
+- `DISCORD_WEBHOOK_AUTOCHECK_URL` を使用して Discord Webhook へ通知を送信します。
 
 ### 5. GitHub Actions 自動化
 [check-sacsbar-sale-wallets.yml](../.github/workflows/check-sacsbar-sale-wallets.yml)

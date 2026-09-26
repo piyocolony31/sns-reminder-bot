@@ -12,10 +12,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, "known_wallets.json")
 
-# 通知用環境変数
-LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
-LINE_GROUP_ID = os.getenv("LINE_GROUP_ID") or os.getenv("LINE_TO_ID")
-DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("DISCORD_WEBHOOK_AUTOCHECK_URL")
+# Discord Webhook 通知用環境変数
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_AUTOCHECK_URL")
 
 # 長財布判定用キーワード
 LONG_WALLET_KEYWORDS = [
@@ -39,7 +37,7 @@ def send_http_post(url: str, headers: dict, data_bytes: bytes, timeout: int = 10
 def notify_discord(message_text: str) -> bool:
     """Discord Webhook を使用して通知"""
     if not DISCORD_WEBHOOK_URL:
-        logging.info("DISCORD_WEBHOOK_URL が設定されていないため、Discord通知をスキップします。")
+        logging.info("DISCORD_WEBHOOK_AUTOCHECK_URL が設定されていないため、Discord通知をスキップします。")
         return False
 
     headers = {"Content-Type": "application/json"}
@@ -53,11 +51,6 @@ def notify_discord(message_text: str) -> bool:
     except Exception as e:
         logging.error(f"Discord通知送信エラー: {e}")
         return False
-
-
-def notify_line(message_text: str) -> bool:
-    """LINE Push API を使用して通知"""
-    if not LINE_CHANNEL_ACCESS_TOKEN or not LINE_GROUP_ID:
         logging.info("LINE_CHANNEL_ACCESS_TOKEN または LINE_GROUP_ID が設定されていないため、LINE通知をスキップします。")
         return False
 
@@ -234,12 +227,10 @@ def main():
         msg = format_notification_message(new_items)
         logging.info(f"\n--- 通知メッセージ ---\n{msg}\n---------------------")
 
-        # Discord / LINE 通知
+        # Discord 通知
         sent_discord = notify_discord(msg)
-        sent_line = notify_line(msg)
-
-        if not sent_discord and not sent_line:
-            logging.info("通知先のWebhook/Tokenが未設定、または送信に失敗しました。")
+        if not sent_discord:
+            logging.info("通知先のWebhookが未設定、または送信に失敗しました。")
     else:
         logging.info("新着の長財布はありませんでした。")
 
