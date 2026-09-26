@@ -17,11 +17,23 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
-      - name: Install dependencies & Playwright
-        run: |
-          pip install -r check-sacsbar-sale-wallets/requirements.txt
-          playwright install --with-deps chromium
+      - name: Install pip dependencies
+        run: pip install -r check-sacsbar-sale-wallets/requirements.txt
+
+      - name: Cache Playwright Browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('check-sacsbar-sale-wallets/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: playwright install chromium --with-deps
 
       - name: Run Sacs Bar Sale Wallet Checker
         env:

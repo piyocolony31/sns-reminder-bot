@@ -31,4 +31,5 @@ Sacs Bar (サックスバー) 公式サイトのメンズ・ユニセックス�
 ### 5. GitHub Actions 自動化
 [check-sacsbar-sale-wallets.yml](../.github/workflows/check-sacsbar-sale-wallets.yml)
 - 毎日日本時間9:00（`0 0 * * *`）に自動実行および手動実行（`workflow_dispatch`）
+- `pip` および `Playwright Chromium` バイナリのキャッシュ（`actions/cache`）を利用し、ビルド時間を大幅に高速化しています。
 - 実行後、`known_wallets.json` に変更があった場合は自動的にコミット＆プッシュされます。
