@@ -110,7 +110,23 @@ async def crawl_sacsbar_sale_wallets():
         while True:
             url = f"https://sacsbar.com/c/sale/sale_mens_uni_sex?page={current_page}&sort=latest"
             logging.info(f"Fetching page {current_page}: {url}")
-            await page.goto(url, wait_until="networkidle")
+
+            # networkidle はバックグラウンドリクエスト等によりタイムアウトを起こしやすいため domcontentloaded を使用
+            max_retries = 3
+            for attempt in range(1, max_retries + 1):
+                try:
+                    await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                    try:
+                        await page.wait_for_selector(".fs-c-productListItem", timeout=5000)
+                    except Exception:
+                        pass
+                    break
+                except Exception as e:
+                    if attempt == max_retries:
+                        logging.error(f"Page {current_page} の取得に失敗しました ({max_retries}回試行): {e}")
+                        raise
+                    logging.warning(f"Page {current_page} 取得失敗 (試行 {attempt}/{max_retries})。再試行します... Error: {e}")
+                    await asyncio.sleep(2)
 
             page_data = await page.evaluate('''() => {
                 const productNodes = document.querySelectorAll('.fs-c-productListItem');
