@@ -51,27 +51,6 @@ def notify_discord(message_text: str) -> bool:
     except Exception as e:
         logging.error(f"Discord通知送信エラー: {e}")
         return False
-        logging.info("LINE_CHANNEL_ACCESS_TOKEN または LINE_GROUP_ID が設定されていないため、LINE通知をスキップします。")
-        return False
-
-    url = "https://api.line.me/v2/bot/message/push"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {LINE_CHANNEL_ACCESS_TOKEN}",
-    }
-    payload = {
-        "to": LINE_GROUP_ID,
-        "messages": [{"type": "text", "text": message_text}],
-    }
-
-    try:
-        data_bytes = json.dumps(payload).encode("utf-8")
-        status = send_http_post(url, headers, data_bytes)
-        logging.info(f"LINE通知を送信しました (status: {status})。")
-        return True
-    except Exception as e:
-        logging.error(f"LINE通知送信エラー: {e}")
-        return False
 
 
 def is_long_wallet(text: str) -> bool:

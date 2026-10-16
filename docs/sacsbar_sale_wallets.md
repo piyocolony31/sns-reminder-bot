@@ -26,10 +26,12 @@ Sacs Bar (サックスバー) 公式サイトのメンズ・ユニセックス�
 - 次回実行時に保存済みの商品IDと比較し、未検知の商品IDが存在する場合のみ「新着アイテム」として通知を行います。
 
 ### 4. 通知機能
-- `DISCORD_WEBHOOK_AUTOCHECK_URL` を使用して Discord Webhook へ通知を送信します。
+- **新着アイテム通知**: 新着長財布が検出された場合、`DISCORD_WEBHOOK_AUTOCHECK_URL` を使用して Discord Webhook へ商品名・URLを送信します。
+- **失敗・エラー通知**: GitHub Actions ワークフロー内のいずれかのステップ（依存関係インストール、クロール実行、コミット等）でエラーが発生した場合、`DISCORD_WEBHOOK_AUTOCHECK_URL` へエラー詳細ログURLを含む Embed 形式の失敗通知を自動送信します。
 
 ### 5. GitHub Actions 自動化
 [check-sacsbar-sale-wallets.yml](../.github/workflows/check-sacsbar-sale-wallets.yml)
 - 毎日日本時間9:00（`0 0 * * *`）に自動実行および手動実行（`workflow_dispatch`）
-- `pip` および `Playwright Chromium` バイナリのキャッシュ（`actions/cache`）を利用し、ビルド時間を大幅に高速化しています。
+- `pip` および `Playwright Chromium` バイナリのキャッシュ（`actions/cache`）を利用し、ビルド時間を大幅に高速化しています。Playwrightのキャッシュキーにはインストールされた正確なPlaywrightバージョン（`pip show playwright`）を使用し、Playwrightアップデート時にも不整合が起きないように設計されています。
 - 実行後、`known_wallets.json` に変更があった場合は自動的にコミット＆プッシュされます。
+- ワークフローが失敗した場合は `if: failure()` により Discord へ即時通知されます。

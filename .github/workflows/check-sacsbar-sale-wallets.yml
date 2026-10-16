@@ -22,18 +22,24 @@ jobs:
       - name: Install pip dependencies
         run: pip install -r check-sacsbar-sale-wallets/requirements.txt
 
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(pip show playwright | grep Version | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+
       - name: Cache Playwright Browsers
         id: playwright-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('check-sacsbar-sale-wallets/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
 
       - name: Install Playwright Chromium
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: playwright install chromium --with-deps
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: playwright install-deps chromium
 
       - name: Run Sacs Bar Sale Wallet Checker
         env:
@@ -46,3 +52,42 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add check-sacsbar-sale-wallets/known_wallets.json
           git diff --quiet && git diff --staged --quiet || (git commit -m "Update SacsBar known sale wallets" && git push)
+
+      - name: Notify Discord on Failure
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_AUTOCHECK_URL }}
+        run: |
+          if [ -n "$DISCORD_WEBHOOK_URL" ]; then
+            REPO="${{ github.repository }}"
+            WORKFLOW="${{ github.workflow }}"
+            RUN_ID="${{ github.run_id }}"
+            RUN_URL="https://github.com/${REPO}/actions/runs/${RUN_ID}"
+
+            PAYLOAD=$(jq -n \
+              --arg repo "$REPO" \
+              --arg workflow "$WORKFLOW" \
+              --arg url "$RUN_URL" \
+              '{
+                content: "🚨 **[GitHub Actions 失敗通知]**",
+                embeds: [{
+                  title: "❌ ワークフローの実行に失敗しました",
+                  url: $url,
+                  color: 15158332,
+                  fields: [
+                    { name: "リポジトリ", value: $repo, inline: true },
+                    { name: "ワークフロー", value: $workflow, inline: true },
+                    { name: "詳細ログ", value: $url }
+                  ],
+                  footer: { text: "GitHub Actions Auto-Notification" },
+                  timestamp: (now | todate)
+                }]
+              }')
+
+            curl -H "Content-Type: application/json" \
+                 -X POST \
+                 -d "$PAYLOAD" \
+                 "$DISCORD_WEBHOOK_URL"
+          else
+            echo "DISCORD_WEBHOOK_AUTOCHECK_URL is not set."
+          fi
