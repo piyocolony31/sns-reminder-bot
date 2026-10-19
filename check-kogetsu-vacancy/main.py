@@ -7,6 +7,8 @@ import urllib.request
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import calendar
+
 # ログ設定
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
@@ -15,9 +17,28 @@ LODGER_CODE = "0_1_2_3_4_6"
 LODGER_NUM = "3_0_0_0_0_0"  # 大人3名
 STAYS = "1"
 
-# 検索対象期間 (2026年12月1日 〜 2027年3月31日)
+# 検索対象期間の最小開始日 (2026年12月1日以降)
 MIN_SEARCH_DATE = date(2026, 12, 1)
-MAX_SEARCH_DATE = date(2027, 3, 31)
+# 検索対象の先々の月数 (実行月から7ヶ月先月末まで)
+SEARCH_MONTHS_AHEAD = int(os.getenv("SEARCH_MONTHS_AHEAD", "7"))
+
+
+def get_max_search_date(base_date: date = None, months_ahead: int = SEARCH_MONTHS_AHEAD) -> date:
+    """
+    基準日 (base_date) から指定された月数先 (months_ahead) の月末日を計算して返す。
+    例: base_date が 2026-10-19 で months_ahead が 7 の場合 -> 2027-05-31
+    """
+    if base_date is None:
+        base_date = date.today()
+    total_months = base_date.month + months_ahead
+    target_year = base_date.year + (total_months - 1) // 12
+    target_month = (total_months - 1) % 12 + 1
+    _, last_day = calendar.monthrange(target_year, target_month)
+    return date(target_year, target_month, last_day)
+
+
+# 後方互換用
+MAX_SEARCH_DATE = get_max_search_date()
 
 # 除外対象の日付 (月, 日) - 1月3日などを通知スキップ対象にする
 EXCLUDE_MONTH_DAYS = {(1, 3)}
@@ -31,18 +52,20 @@ LINE_GROUP_ID = os.getenv("LINE_GROUP_ID") or os.getenv("LINE_TO_ID")
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL") or os.getenv("DISCORD_WEBHOOK_AUTOCHECK_URL") or os.getenv("DISCORD_HOUSEHOLD_WEBHOOK_URL")
 
 
-def get_target_year_months():
+def get_target_year_months(base_date: date = None):
     """
     検索対象の年月 (YYYYMM) のリストを取得。
-    MIN_SEARCH_DATE から MAX_SEARCH_DATE の範囲の年月を抽出。
+    MIN_SEARCH_DATE から 7ヶ月先の月末までの範囲の年月を抽出。
     """
-    today = date.today()
-    start_date = max(today, MIN_SEARCH_DATE)
+    if base_date is None:
+        base_date = date.today()
+    start_date = max(base_date, MIN_SEARCH_DATE)
+    max_search_date = get_max_search_date(base_date)
 
     ym_set = set()
     current = date(start_date.year, start_date.month, 1)
 
-    while current <= MAX_SEARCH_DATE:
+    while current <= max_search_date:
         ym_set.add(current.strftime("%Y%m"))
         if current.month == 12:
             current = date(current.year + 1, 1, 1)
@@ -98,13 +121,18 @@ def build_reservation_url(hotel_code: str, ci_date_str: str) -> str:
     )
 
 
-def check_kogetsu_sunday_vacancies():
+def check_kogetsu_sunday_vacancies(base_date: date = None):
     """
-    秀峰閣 湖月 の12月以降〜3月末までの日曜日空室チェックを実施する。
+    秀峰閣 湖月 の12月以降〜7ヶ月先月末までの日曜日空室チェックを実施する。
     ThreadPoolExecutor を使用して並列取得する。
     """
-    target_yms = get_target_year_months()
-    logging.info(f"検索対象年月: {target_yms}")
+    if base_date is None:
+        base_date = date.today()
+    start_search_date = max(base_date, MIN_SEARCH_DATE)
+    max_search_date = get_max_search_date(base_date)
+
+    target_yms = get_target_year_months(base_date)
+    logging.info(f"検索対象年月: {target_yms} (対象期間: {start_search_date} 〜 {max_search_date})")
 
     found_vacancies = []
 
@@ -135,8 +163,8 @@ def check_kogetsu_sunday_vacancies():
 
                 sales_date = datetime.strptime(sales_date_str, "%Y-%m-%d").date()
 
-                # 条件1: 対象期間内 (2026-12-01 〜 2027-03-31)
-                if not (MIN_SEARCH_DATE <= sales_date <= MAX_SEARCH_DATE):
+                # 条件1: 対象期間内 (start_search_date 〜 max_search_date)
+                if not (start_search_date <= sales_date <= max_search_date):
                     continue
 
                 # 条件2: 日曜日のみチェックする場合 (weekday == 6)
@@ -229,11 +257,16 @@ def notify_discord(message_text: str):
         return False
 
 
-def format_notification_message(vacancies):
+def format_notification_message(vacancies, max_search_date: date = None):
     """通知メッセージのフォーマット"""
+    if max_search_date:
+        period_str = f"12月〜{max_search_date.month}月"
+    else:
+        period_str = "12月以降（7ヶ月先まで）"
+
     lines = [
         "🎉【秀峰閣 湖月】空室が見つかりました！",
-        "12月〜3月・日曜日1泊（大人3名）のプランに空きがあります。",
+        f"{period_str}・日曜日1泊（大人3名）のプランに空きがあります。",
         "",
     ]
 
@@ -257,14 +290,16 @@ def format_notification_message(vacancies):
 
 def main():
     logging.info("=== 秀峰閣 湖月 空室チェック開始 ===")
-    vacancies = check_kogetsu_sunday_vacancies()
+    today = date.today()
+    max_search_date = get_max_search_date(today)
+    vacancies = check_kogetsu_sunday_vacancies(today)
 
     if not vacancies:
         logging.info("該当する日曜日1泊の空室は見つかりませんでした。")
         sys.exit(0)
 
     logging.info(f"空室検出数: {len(vacancies)}件")
-    msg = format_notification_message(vacancies)
+    msg = format_notification_message(vacancies, max_search_date)
     logging.info(f"\n--- 送信メッセージ ---\n{msg}\n---------------------")
 
     sent_discord = notify_discord(msg)
